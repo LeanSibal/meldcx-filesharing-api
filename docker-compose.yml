@@ -4,9 +4,10 @@ services:
   api:
     build: .
     command: npm start
+    env_file: .env
     volumes:
       - .:/usr/app/
       - /usr/app/node_modules
       - /usr/app/dist
     ports:
-      - "3000:3000"
+      - ${PORT}:${PORT}
