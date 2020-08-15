@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+
+  api:
+    build: .
+    command: npm start
+    env_file: .env
+    volumes:
+      - .:/usr/app/
+      - /usr/app/node_modules
+      - /usr/app/dist
+    ports:
+      - ${PORT}:${PORT}
+
+  mongo:
+    container_name: mongo
+    env_file: .env
+    image: mongo
+    environment:
+      - MONGODB_INITDB_DATABASE:${MONGO_DATABASE}
+      - MONGODB_INITDB_ROOT_USERNAME:${MONGO_USER}
+      - MONGODB_INITDB_ROOT_PASSWORD:${MONGO_PASSWORD}
+    volumes:
+      - ./data:/data/db
+    ports:
+      - ${MONGO_PORT}:${MONGO_PORT}
