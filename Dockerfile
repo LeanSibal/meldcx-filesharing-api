@@ -1,23 +1,20 @@
 # Check out https://hub.docker.com/_/node to select a new base image
-FROM node:10-slim
-
-# Set to a non-root built-in user `node`
-USER node
+FROM node:lts-alpine3.12
 
 # Create app directory (with user `node`)
-RUN mkdir -p /home/node/app
+RUN mkdir -p /usr/app
 
-WORKDIR /home/node/app
+WORKDIR /usr/app
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
-COPY --chown=node package*.json ./
+COPY package*.json ./
 
 RUN npm install
 
 # Bundle app source code
-COPY --chown=node . .
+COPY . /usr/app
 
 RUN npm run build
 
@@ -25,4 +22,4 @@ RUN npm run build
 ENV HOST=0.0.0.0 PORT=3000
 
 EXPOSE ${PORT}
-CMD [ "node", "." ]
+CMD [ "nodemon" ]
