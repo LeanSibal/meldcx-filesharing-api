@@ -8,9 +8,9 @@ import { IStorageService } from '../interfaces';
 import { Container, File } from '../models';
 
 
-export class StorageGcController {
-  @serviceProxy('StorageGC') // StorageGC is the name of the datasoruce
-  private storageGcSvc: IStorageService;
+export class StorageController {
+  @serviceProxy('Storage')
+  private storageService: IStorageService;
 
   constructor(@inject(RestBindings.Http.REQUEST) public request: Request,
     @inject(RestBindings.Http.RESPONSE) public response: Response) { }
@@ -24,7 +24,7 @@ export class StorageGcController {
     },
   })
   async createContainer(@requestBody() container: Container): Promise<Container> {
-    const createContainer = promisify(this.storageGcSvc.createContainer);
+    const createContainer = promisify(this.storageService.createContainer);
     return await createContainer(container);
   }
 
@@ -41,7 +41,7 @@ export class StorageGcController {
     },
   })
   async findContainer(@param.query.object('filter', getFilterSchemaFor(Container)) filter?: Filter): Promise<Container[]> {
-    const getContainers = promisify(this.storageGcSvc.getContainers);
+    const getContainers = promisify(this.storageService.getContainers);
     return await getContainers();
   }
 
@@ -54,7 +54,7 @@ export class StorageGcController {
     },
   })
   async findContainerByName(@param.path.string('containerName') containerName: string): Promise<Container> {
-    const getContainer = promisify(this.storageGcSvc.getContainer);
+    const getContainer = promisify(this.storageService.getContainer);
     return await getContainer(containerName);
   }
 
@@ -66,7 +66,7 @@ export class StorageGcController {
     },
   })
   async deleteContainerByName(@param.path.string('containerName') containerName: string): Promise<boolean> {
-    const destroyContainer = promisify(this.storageGcSvc.destroyContainer);
+    const destroyContainer = promisify(this.storageService.destroyContainer);
     return await destroyContainer(containerName);
   }
 
@@ -84,7 +84,7 @@ export class StorageGcController {
   })
   async findFilesInContainer(@param.path.string('containerName') containerName: string,
     @param.query.object('filter', getFilterSchemaFor(Container)) filter?: Filter): Promise<File[]> {
-    const getFiles = promisify(this.storageGcSvc.getFiles);
+    const getFiles = promisify(this.storageService.getFiles);
     return await getFiles(containerName, {});
   }
 
@@ -98,7 +98,7 @@ export class StorageGcController {
   })
   async findFileInContainer(@param.path.string('containerName') containerName: string,
     @param.path.string('fileName') fileName: string): Promise<File> {
-    const getFile = promisify(this.storageGcSvc.getFile);
+    const getFile = promisify(this.storageService.getFile);
     return await getFile(containerName, fileName);
   }
 
@@ -111,7 +111,7 @@ export class StorageGcController {
   })
   async deleteFileInContainer(@param.path.string('containerName') containerName: string,
     @param.path.string('fileName') fileName: string): Promise<boolean> {
-    const removeFile = promisify(this.storageGcSvc.removeFile);
+    const removeFile = promisify(this.storageService.removeFile);
     return await removeFile(containerName, fileName);
   }
 
@@ -127,7 +127,7 @@ export class StorageGcController {
     @param.path.string('containerName') containerName: string,
     @requestBody.file() request: Request, 
   ): Promise<File> {
-    const upload = promisify(this.storageGcSvc.upload);
+    const upload = promisify(this.storageService.upload);
     return await upload(containerName, this.request, this.response, {});
   }
 
@@ -141,7 +141,7 @@ export class StorageGcController {
   })
   async download(@param.path.string('containerName') containerName: string,
     @param.path.string('fileName') fileName: string): Promise<any> {
-    const download = promisify(this.storageGcSvc.download);
+    const download = promisify(this.storageService.download);
     return await download(containerName, fileName, this.request, this.response);
   }
 }

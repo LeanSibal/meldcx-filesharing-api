@@ -1,6 +1,5 @@
 import { Container, File } from "../models";
 
-
 export type Callback<T> = (err: Error | null, reply: T) => void;
 
 export interface IStorageService {

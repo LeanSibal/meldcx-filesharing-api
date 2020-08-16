@@ -23,13 +23,13 @@ const config = {
 // gracefully. The `stop()` method is inherited from `juggler.DataSource`.
 // Learn more at https://loopback.io/doc/en/lb4/Life-cycle.html
 @lifeCycleObserver('datasource')
-export class StorageGCDataSource extends juggler.DataSource
+export class StorageDataSource extends juggler.DataSource
   implements LifeCycleObserver {
-  static dataSourceName = 'StorageGC';
+  static dataSourceName = 'Storage';
   static readonly defaultConfig = config;
 
   constructor(
-    @inject('datasources.config.StorageGC', {optional: true})
+    @inject('datasources.config.Storage', {optional: true})
     dsConfig: object = config,
   ) {
     super(dsConfig);
