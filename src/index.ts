@@ -1,9 +1,11 @@
 import {ApplicationConfig, MeldcxFilesharingApiApplication} from './application';
+import { StorageServiceProvider } from './providers';
 
 export * from './application';
 
 export async function main(options: ApplicationConfig = {}) {
   const app = new MeldcxFilesharingApiApplication(options);
+  app.serviceProvider(StorageServiceProvider);
   await app.boot();
   await app.start();
 

@@ -65,3 +65,9 @@ typings/
 
 # Docker specific files
 /data
+
+# Machine generated files
+*.DS_Store
+
+# configs
+google.json
