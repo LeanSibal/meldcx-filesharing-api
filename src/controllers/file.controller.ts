@@ -1,91 +1,55 @@
 import {Request, Response, RestBindings, get, post, del, param, requestBody, ResponseObject} from '@loopback/rest';
+import { repository } from '@loopback/repository';
 import {inject} from '@loopback/core';
+import { Container, File } from '../models';
+import { StorageRepository } from '../repositories';
 
-/**
- * OpenAPI response for file()
- */
-const FILE_RESPONSE: ResponseObject = {
-  description: 'File Response',
-  content: {
-    'application/json': {
-      schema: {
-        type: 'object',
-        title: 'FileResponse',
-        properties: {
-          greeting: {type: 'string'},
-          date: {type: 'string'},
-          url: {type: 'string'}
-        },
+export class FileController {
+
+  constructor(
+    @inject(RestBindings.Http.REQUEST) public request: Request,
+    @inject(RestBindings.Http.RESPONSE) public response: Response,
+    @repository(StorageRepository) public storageRepository: StorageRepository,
+  ) { }
+
+  @post('/file', {
+    responses: {
+      '200': {
+        description: 'File uploaded.',
+        content: { 'application/json': { schema: { 'x-ts-type': File } } },
       },
     },
-  },
-};
-
-/**
- * A simple controller to bounce back http requests
- */
-export class FileController {
-  constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
-  // Map to `GET /file`
-  @post('/file', {
-   responses: {
-      200: {
-        content: {
-          'application/json': {
-            schema: {
-              type: 'object',
-            },
-          },
-        },
-        description: '',
-      },
-    }
   })
   async upload(
     @requestBody.file() request: Request, 
-  ): Promise<object> {
-    // Reply with a greeting, the current time, the url, and request headers
-		console.log(request)
-    return new Promise<object>((resolve, reject) => {
-      resolve({
-				publicKey: 'test',
-				privateKey: 'test'
-			});
-    });
-  }
+  ): Promise<File> {
+    return await this.storageRepository.upload(this.request, this.response);
+  } 
 
-  // Map to `GET /file`
   @get('/file/{publicKey}', {
     responses: {
-      '200': FILE_RESPONSE,
+      '200': {
+        description: 'File downloaded.',
+        content: { 'application/json': { schema: { 'x-ts-type': Object } } },
+      },
     },
   })
-  fetch(
+  async download(
     @param.path.string('publicKey') publicKey: string
-  ): object {
-    // Reply with a greeting, the current time, the url, and request headers
-    return {
-      greeting: 'GET',
-      publicKey,
-      date: new Date(),
-      url: this.req.url
-    };
+  ): Promise<any> {
+    return await this.storageRepository.download(publicKey, this.request, this.response);
   }
 
-  // Map to `DELETE /file`
   @del('/file/{privateKey}', {
     responses: {
-      '200': FILE_RESPONSE
-    }
+      '204': {
+        description: 'File deleted.',
+      },
+    },
   })
-  destroy(
+  async destroy(
     @param.path.string('privateKey') privateKey: string
-  ): object {
-    return {
-      greeting: 'DELETE',
-      privateKey,
-      date: new Date(),
-      url: this.req.url
-    }
+  ): Promise<boolean> {
+    return await this.storageRepository.removeFile(privateKey, this.request, this.response);
   }
 }

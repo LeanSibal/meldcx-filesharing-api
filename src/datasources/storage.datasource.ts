@@ -1,6 +1,48 @@
 import {inject, lifeCycleObserver, LifeCycleObserver} from '@loopback/core';
 import {juggler} from '@loopback/repository';
 
+const {
+  STORAGE_PROVIDER,
+  STORAGE_GOOGLE_PROJECTID,
+  STORAGE_GOOGLE_BUCKET,
+  STORAGE_GOOGLE_CONFIG_PATH,
+  STORAGE_LOCAL_FOLDER,
+  STORAGE_LOCAL_CONTAINER
+} = process.env;
+
+let config = {
+  name: 'Storage',
+  connector: 'loopback-component-storage',
+  nameConflict: 'makeUnique'
+};
+
+const defaults = {
+  provider: 'filesystem',
+  root: './uploads',
+  nameConflict: 'makeUnique'
+};
+
+switch (STORAGE_PROVIDER) {
+  case 'local':
+    Object.assign(config, {
+      provider: 'filesystem',
+      root: STORAGE_LOCAL_FOLDER ? STORAGE_LOCAL_FOLDER : './uploads',
+    });
+  break;
+
+  case 'google':
+    Object.assign(config, {
+      provider: 'google',
+      keyFilename: STORAGE_GOOGLE_CONFIG_PATH,
+      projectId: STORAGE_GOOGLE_PROJECTID,
+    });
+  break;
+
+  default:
+    Object.assign(config, defaults);
+  break;
+}
+
 /*
 const config = {
   "name": "Storage",
@@ -10,13 +52,14 @@ const config = {
   "projectId": "projects-235714",
   "nameConflict": "makeUnique"
 };
-*/
 const config = {
   "name": "Storage",
   "connector": "loopback-component-storage",
   "provider": "filesystem",
-  "root": "./uploads"
+  "root": "./uploads",
+  "nameConflict": "makeUnique"
 };
+*/
 
 // Observe application's life cycle to disconnect the datasource when
 // application is stopped. This allows the application to be shut down
