@@ -18,7 +18,6 @@ export class File extends Entity {
   })
   url?: string;
 
-
   constructor(data?: Partial<File>) {
     super(data);
   }

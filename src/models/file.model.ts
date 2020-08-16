@@ -3,17 +3,35 @@ import {Entity, model, property} from '@loopback/repository';
 @model({settings: {strict: false}})
 export class File extends Entity {
   @property({
-    type: 'string',
+    type: 'number',
     id: true,
     generated: true,
+  })
+  id?: number;
+
+  @property({
+    type: 'string',
+    required: false,
   })
   privateKey?: string;
 
   @property({
     type: 'string',
-    required: true,
+    required: false,
   })
-  publicKey: string;
+  publicKey?: string;
+
+  @property({
+    type: 'string',
+    required: false,
+  })
+  name?: string;
+
+  @property({
+    type: 'string',
+    required: false,
+  })
+  type?: string;
 
   // Define well-known properties here
 

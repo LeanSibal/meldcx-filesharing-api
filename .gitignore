@@ -68,3 +68,6 @@ typings/
 
 # Machine generated files
 *.DS_Store
+
+# configs
+google.json

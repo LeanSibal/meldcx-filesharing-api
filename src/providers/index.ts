@@ -1,1 +1,1 @@
-export * from './storage-gc-service.provider';
+export * from './storage-service.provider';
