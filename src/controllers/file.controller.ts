@@ -42,19 +42,7 @@ export class FileController {
     }
   })
   async upload(
-    @requestBody({
-      description: 'multipart/form-data value.',
-      required: true,
-      content: {
-        'multipart/form-data': {
-          // Skip body parsing
-          'x-parser': 'stream',
-          schema: {type: 'object'},
-        },
-      },
-    })
-    request: Request,
-    @inject(RestBindings.Http.RESPONSE) response: Response,
+    @requestBody.file() request: Request, 
   ): Promise<object> {
     // Reply with a greeting, the current time, the url, and request headers
 		console.log(request)
