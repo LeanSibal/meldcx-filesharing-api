@@ -40,13 +40,13 @@ export class StorageRepository extends DefaultCrudRepository<
   async upload(request: any, response: any): Promise<File> {
     const upload = promisify(this.storageService.upload);
     const uploaded = await upload(container, request, response, {});
-		const file = await this.create({
-			name: uploaded.files.file[0].name,
-			type: uploaded.files.file[0].type,
-			publicKey: await this.generateUniqueKey('publicKey', 32),
-			privateKey: await this.generateUniqueKey('privateKey', 32),
-		});
-		return file;
+    const file = await this.create({
+      name: uploaded.files.file[0].name,
+      type: uploaded.files.file[0].type,
+      publicKey: await this.generateUniqueKey('publicKey', 32),
+      privateKey: await this.generateUniqueKey('privateKey', 32),
+    });
+    return file;
   }
 
   async download(publicKey: string, request: any, response: any): Promise<any> {
@@ -64,18 +64,18 @@ export class StorageRepository extends DefaultCrudRepository<
     return await removeFile(container, fileName);
   }
 
-	async generateUniqueKey(field: string, length: number): Promise<string> {
-		let uniqueKey = this.makeUniqueKey(length);
-		while ((await this.count({ [field]: uniqueKey })).count !== 0) uniqueKey = this.makeUniqueKey(length);
+  async generateUniqueKey(field: string, length: number): Promise<string> {
+    let uniqueKey = this.makeUniqueKey(length);
+    while ((await this.count({ [field]: uniqueKey })).count !== 0) uniqueKey = this.makeUniqueKey(length);
     return uniqueKey;
-	}
+  }
 
-	makeUniqueKey(length: number): string {
-		let result = '';
-		const characters = 'abcdef0123456789';
-		while (result.length < length) {
-			result += characters.charAt(Math.floor(Math.random() * characters.length));
-		}
-		return result;
-	}
+  makeUniqueKey(length: number): string {
+    let result = '';
+    const characters = 'abcdef0123456789';
+    while (result.length < length) {
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+  }
 }
